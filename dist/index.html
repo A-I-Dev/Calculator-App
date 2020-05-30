@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- MY version of Destyle.css --> 
+    <link rel="stylesheet" href="css/destyle++.css">
+    
+    <!-- Mobile first main styling file -->
+    <link rel="stylesheet" href="css/main.css">
+
+    <!-- Media queries styling file/s -->
+    <link rel="stylesheet" href="css/480.css" media="min-width: 480px">
+    <link rel="stylesheet" href="css/768.css" media="min-width: 768px">
+    <link rel="stylesheet" href="css/992.css" media="min-width: 992px">
+    <link rel="stylesheet" href="css/1200.css" media="min-width: 1200px">
+
+    <title>Calculator</title>
+</head>
+<body>
+    <!--[if IE]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
+    <![endif]-->
+
+    <div id="calc-outer-wrap">
+        <div id="calc-inner-wrap">
+            <div id="result-wrap">
+                <p id="result"></p>
+            </div>
+            <div id="keys-wrap">
+                <ul id="keys-list">
+                    <li id="seven-key" class="calc-key" name="num-char">
+                        <span>7</span>
+                    </li>
+                    <li id="eight-key" class="calc-key" name="num-char">
+                        <span>8</span>
+                    </li>
+                    <li id="nine-key" class="calc-key" name="num-char">
+                        <span>9</span>
+                    </li>
+                    <li id="four-key" class="calc-key" name="num-char">
+                        <span>4</span>
+                    </li>
+                    <li id="five-key" class="calc-key" name="num-char">
+                        <span>5</span>
+                    </li>
+                    <li id="six-key" class="calc-key" name="num-char">
+                        <span>6</span>
+                    </li>
+                    <li id="one-key" class="calc-key" name="num-char">
+                        <span>1</span>
+                    </li>
+                    <li id="two-key" class="calc-key" name="num-char">
+                        <span>2</span>
+                    </li>
+                    <li id="three-key" class="calc-key" name="num-char">
+                        <span>3</span>
+                    </li>
+                    <li id="clear-key" class="calc-key" name="op-char">
+                        <span>C</span>
+                    </li>
+                    <li id="clear-one-key" class="calc-key" name="op-char">
+                        <span>CE</span>
+                    </li>                    
+                    <li id="addition-key" class="calc-key tall-key" name="math-char">
+                        <span>+</span>
+                    </li>
+                    <li id="subtraction-key" class="calc-key" name="math-char">
+                        <span>-</span>
+                    </li>
+                    <li id="multiply-key" class="calc-key" name="math-char">
+                        <span>*</span>
+                    </li>
+                    <li id="divide-key" class="calc-key" name="math-char">
+                        <span>/</span>
+                    </li>
+                    <li id="equal-key" class="calc-key equal-key" name="op-char">
+                        <span>=</span>
+                    </li>
+                    <li id="zero-key" class="calc-key zero-key" name="num-char">
+                        <span>0</span>
+                    </li>
+                    <li class="calc-key" name="dot-char">
+                        <span>.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+
+    <!-- Font Awesome CDN (!!!remove if unnecessary!!!) -->
+    <!-- <script src="https://kit.fontawesome.com/9ee6b26067.js" crossorigin="anonymous"></script>     -->
+</body>
+</html>
