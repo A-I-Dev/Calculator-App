@@ -3,12 +3,24 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; }
+  min-height: 100vh;
+  background: url("https://source.unsplash.com/weekly") no-repeat center/cover; }
+  body:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #000;
+    opacity: .9;
+    z-index: 1; }
 
 #calc-outer-wrap {
   max-width: 100%;
   padding: 20px;
-  background: #242424; }
+  background: #242424;
+  z-index: 2; }
 
 #result {
   background: #ccc;
