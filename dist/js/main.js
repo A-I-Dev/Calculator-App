@@ -131,8 +131,7 @@ function dotFinder() {
     let indexOfDot;
     let indexOfMathChar;
 
-    for (let i = 0; i < resWin.innerHTML.length; i++) {
-        console.log(i + " : " + resWin.innerHTML[i]);
+    for (let i = 0; i < resWin.innerHTML.length; i++) {        
         if (resWin.innerHTML[i] === "+" || resWin.innerHTML[i] === "-" || resWin.innerHTML[i] === "*" || resWin.innerHTML[i] === "/") {
             indexOfMathChar = i;
         }
@@ -185,3 +184,47 @@ function clearAll() {
 function clearOneChar() {
     resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1);
 }
+
+
+
+///////////////////////////
+// CALCULATION FUNCTION //
+/////////////////////////
+
+// function calc(content) {
+//     let result = "";
+//     let nums = [];
+//     let mathSigns = [];
+//     let resultWindowContent = content;
+//     let counter = 0;
+
+//     for (let i  = 0; i < resultWindowContent.length; i++) {
+//         if (resultWindowContent[i] === "+" || resultWindowContent[i] === "-" || resultWindowContent[i] === "*" || resultWindowContent[i] === "/") {
+//             mathSigns[counter] = resultWindowContent[i];
+//             counter++;
+//         }
+//         else {
+//             nums[counter] += resultWindowContent[i];
+//         }
+//     }
+
+//     for (let i = 0; i < nums.length; i++) {
+//         nums[i] = Number(nums[i].slice(9, nums[i].length));
+//     }
+
+//     for (let i = 0; i < nums.length; i++) {
+//         if (mathSigns[i] !== undefined) {
+//             result += nums[i] + mathSigns[i];
+//         }
+//         else {
+//             result += nums[i];
+//         }
+//     }
+
+//     console.log(nums);
+//     console.log(mathSigns);
+//     console.log(result);
+//     console.log(typeof(result));
+
+//     return result;
+// }
