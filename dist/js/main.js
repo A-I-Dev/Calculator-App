@@ -1,21 +1,12 @@
-const calcKeys = document.getElementsByClassName("calc-key"); // list of all keys of the calculator
-const resWin = document.getElementById("result"); // the field in which everything happens
+(function(){
 
-// Adding the event listener to every button click
-for (let i = 0; i < calcKeys.length; i++) {
-    calcKeys[i].addEventListener("click", buttonClick);
+const calcKeys = document.getElementsByClassName("calc-key"); 
+const resWin = document.getElementById("result"); 
+
+for (let calcKey of calcKeys) {
+    calcKey.addEventListener("click", buttonClick);
 }
 
-// Adding the event listener for the Numpad
-// document.addEventListener('keydown', logKey);
-
-// function logKey(e) {
-//     console.log(` ${e.code}`)
-// }
-
-
-
-// Global button click function and logic
 function buttonClick() {
     switch (this.getAttribute("name")) {
         case "num-char":
@@ -49,7 +40,6 @@ function buttonClick() {
 // MULTI-KEY FUNCTIONS //
 ///////////////////////
 
-// Numbers function
 function numCharFunc(charPar) {
     let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
     let charBeforeLast = resWin.innerHTML.charAt(resWin.innerHTML.length - 2);
@@ -81,7 +71,6 @@ function numCharFunc(charPar) {
     }
 }
 
-// Math characters function
 function mathCharFunc(charPar) {
     let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
     let condLastChar = (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/");
@@ -109,7 +98,6 @@ function mathCharFunc(charPar) {
     };
 }
 
-// Floating point function
 function dotCharFunc(charPar) {
     let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
     let isThereADot;
@@ -126,7 +114,6 @@ function dotCharFunc(charPar) {
     }
 }
 
-// Find a dot
 function dotFinder() {
     let indexOfDot;
     let indexOfMathChar;
@@ -175,12 +162,10 @@ function printResult() {
     }
 }
 
-// Clear everything function
 function clearAll() {
     resWin.innerHTML = "";
 }
 
-// Clear only last character function
 function clearOneChar() {
     resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1);
 }
@@ -228,3 +213,5 @@ function clearOneChar() {
 
 //     return result;
 // }
+
+})();
