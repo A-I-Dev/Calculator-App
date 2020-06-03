@@ -81,18 +81,12 @@ function mathCharFunc(charPar) {
     let thisButtonText = charPar.firstElementChild.innerHTML;
     let condButtonText = (thisButtonText === "+" || thisButtonText === "*" || thisButtonText === "/");
 
-    if (resWin.innerHTML === "" && condButtonText) {
-        return;
-    }
-    else if (condLastChar) {
+    if (condLastChar || (lastChar === "." && condCharBeforeLast) || (resWin.innerHTML === "" && condButtonText)) {
         return;
     }
     else if (lastChar === "." && !condCharBeforeLast) {
         resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1) + charPar.firstElementChild.innerHTML;
     }
-    else if (lastChar === "." && condCharBeforeLast) {
-        resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 2) + charPar.firstElementChild.innerHTML;
-    }    
     else {
         resWin.innerHTML += charPar.firstElementChild.innerHTML;
     };
@@ -100,13 +94,8 @@ function mathCharFunc(charPar) {
 
 function dotCharFunc(charPar) {
     let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
-    let isThereADot;
 
-    if (resWin.innerHTML !== "" && lastChar !== ".") {
-        isThereADot = dotFinder();
-    }
-
-    if (lastChar === "." || isThereADot) {
+    if (lastChar === "." || (dotFinder())) {
         return;
     }
     else {
