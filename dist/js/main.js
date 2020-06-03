@@ -1,5 +1,5 @@
-const calcKeys = document.getElementsByClassName("calc-key");
-const resWin = document.getElementById("result");
+const calcKeys = document.getElementsByClassName("calc-key"); // list of all keys of the calculator
+const resWin = document.getElementById("result"); // the field in which everything happens
 
 // Adding the event listener to every button click
 for (let i = 0; i < calcKeys.length; i++) {
