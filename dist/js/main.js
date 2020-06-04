@@ -1,27 +1,26 @@
-// (function(){
+(function(){
 
 const calcKeys = document.getElementsByClassName("calc-key"); 
 const resultField = document.getElementById("result"); 
 const allDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 const allOperators = ["+", "*", "/", "-"];
-const allOperatorsExcludeMinus = ["+", "*", "/"];
 
-for (let calcKey of calcKeys) {
-    calcKey.addEventListener("click", buttonClick);
+for (calcKey of calcKeys) {
+    calcKey.addEventListener("click", calcKeysClick);
 }
 
-function buttonClick() {
+function calcKeysClick() {
     switch (this.getAttribute("name")) {
-        case "num-char":
-            digitKeysClick(this);
+        case "digit-keys":
+            resultField.textContent = digitKeysClick(this);
             break;
-        case "math-char":
-            operatorKeysClick(this);
+        case "operator-keys":
+            resultField.textContent = operatorKeysClick(this);
             break;
-        case "dot-char":
-            decimalPointKeyClick(this);
+        case "decimal-point-key":
+            resultField.textContent = decimalPointKeyClick(this);
             break;
-        case "op-char":
+        case "special-keys":
             switch (this.id) {
                 case "clear-key":
                     resultField.textContent = clearKeysClick(this);
@@ -30,83 +29,89 @@ function buttonClick() {
                     resultField.textContent = clearKeysClick(this);
                     break;
                 case "equal-key":
-                    resultField.textContent = printResult();
+                    if (resultFieldText !== "") {
+                        resultField.textContent = printResult();
+                    }
                     break;                    
             }     
             break;
     }
 }
 
-
-
-//////////////////////////
-// MULTI-KEY FUNCTIONS //
-////////////////////////
-
 function digitKeysClick(keyElement) {
     let resultFieldText = resultField.textContent;
 
-    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
-    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);    
+    let lastCharacter = resultFieldText.charAt(resultFieldText.length - 1);
+    let characterBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);    
     let thisKeyElementText = keyElement.firstElementChild.textContent;
 
     if (keyElement.id === "zero-key") {
-        if (lastChar === "0" && resultFieldText.length === 1) {
-            return;
-        }
-        else if (lastChar === "0" && resultFieldText.length === 2 && resultFieldText.charAt(0) === "-") {
-            return;
-        }
-        else if (lastChar === "0" && allOperators.includes(charBeforeLast)) {
-            return;
+        if (
+            (resultFieldText === "0") 
+            ||  
+            (lastCharacter === "0" && allOperators.includes(characterBeforeLast))
+        ) {
+            resultFieldText = resultFieldText;
         }
         else {
-            resultField.textContent += thisKeyElementText;
+            resultFieldText += thisKeyElementText;
         }
     }
     else {
-        if (lastChar === "0" && resultFieldText.length === 1) {
-            resultField.textContent = thisKeyElementText;
+        if (resultFieldText === "0") {
+            resultFieldText = thisKeyElementText;
         }
-        else if (lastChar === "0" && allOperators.includes(charBeforeLast)) {
-            resultField.textContent = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
+        else if (lastCharacter === "0" && allOperators.includes(characterBeforeLast)) {
+            resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
         }
         else {
-            resultField.textContent += thisKeyElementText;
+            resultFieldText += thisKeyElementText;
         }
     }
+
+    return resultFieldText;
 }
 
 function operatorKeysClick(keyElement) {
     let resultFieldText = resultField.textContent;
-    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
-    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);
+    let lastCharacter = resultFieldText.charAt(resultFieldText.length - 1);
+    let characterBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);
     let thisKeyElementText = keyElement.firstElementChild.textContent;
 
-    if (allOperators.includes(lastChar) || (lastChar === "." && allOperators.includes(charBeforeLast)) || (resultFieldText === "" && allOperatorsExcludeMinus.includes(thisKeyElementText))) {
-        return;
+    if (
+        allOperators.includes(lastCharacter) 
+        || 
+        (lastCharacter === "." && allOperators.includes(characterBeforeLast)) 
+        ||
+        (resultFieldText === "" && thisKeyElementText !== "-")
+    ) {
+        resultFieldText = resultFieldText;
     }
-    else if (lastChar === "." && !allOperators.includes(charBeforeLast)) {
-        resultField.textContent = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
+    else if (lastCharacter === "." && !allOperators.includes(characterBeforeLast)) {
+        resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
     }
     else {
-        resultField.textContent += thisKeyElementText;
+        resultFieldText += thisKeyElementText;
     }
+
+    return resultFieldText;
 }
 
 function decimalPointKeyClick(keyElement) {
-    let lastChar = resultField.textContent.charAt(resultField.textContent.length - 1);
+    let resultFieldText = resultField.textContent;
     let thisKeyElementText = keyElement.firstElementChild.textContent;    
 
-    if (lastChar === "." || decimalPointFinder()) {
-        return;
+    if (lastNumberHasDecimalPoint()) {
+        resultFieldText = resultFieldText;
     }
     else {
-        resultField.textContent += thisKeyElementText;
+        resultFieldText += thisKeyElementText;
     }
+
+    return resultFieldText;    
 }
 
-function decimalPointFinder() {
+function lastNumberHasDecimalPoint() {
     let indexOfDot;
     let indexOfMathChar;
 
@@ -143,30 +148,32 @@ function clearKeysClick(keyElement) {
     return resultFieldText;
 }
 
-
-
-///////////////////////////
-// SINGLE-KEY FUNCTIONS //
-/////////////////////////
-
 function printResult() {
     let resultFieldText = resultField.textContent;
-    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
-    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);  
+    let lastCharacter = resultFieldText.charAt(resultFieldText.length - 1);
+    let characterBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);  
 
-    if (resultFieldText !== "") {
-        if (!allOperators.includes(lastChar) && lastChar !== ".") {
-            resultFieldText = eval(resultFieldText);
-        }
-        else if (allOperators.includes(lastChar) || (lastChar === "." && allDigits.includes(charBeforeLast))) {
-            resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 1));
-        }
-        else if (resultFieldText.length > 2 && lastChar === "." && allOperators.includes(charBeforeLast)) {
-            resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 2));
-        }
-        else {
-            resultFieldText = "";
-        }
+    if (!allOperators.includes(lastCharacter) && lastCharacter !== ".") {
+        resultFieldText = eval(resultFieldText);
+    }
+    else if (
+        allOperators.includes(lastCharacter) 
+        || 
+        (lastCharacter === "." && allDigits.includes(characterBeforeLast))
+    ) {
+        resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 1));
+    }
+    else if (
+        resultFieldText.length > 2 
+        && 
+        lastCharacter === "." 
+        && 
+        allOperators.includes(characterBeforeLast)
+    ) {
+        resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 2));
+    }
+    else {
+        resultFieldText = "";
     }
 
     return resultFieldText;
@@ -216,4 +223,4 @@ function printResult() {
 //     return result;
 // }
 
-// })();
+})();
