@@ -29,6 +29,7 @@ function calcKeysClick() {
                     resultField.textContent = clearKeysClick(this);
                     break;
                 case "equal-key":
+                    let resultFieldText = resultField.textContent;
                     if (resultFieldText !== "") {
                         resultField.textContent = printResult();
                     }
