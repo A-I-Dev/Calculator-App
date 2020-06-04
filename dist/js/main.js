@@ -1,7 +1,10 @@
-(function(){
+// (function(){
 
 const calcKeys = document.getElementsByClassName("calc-key"); 
-const resWin = document.getElementById("result"); 
+const resultField = document.getElementById("result"); 
+const allDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const allOperators = ["+", "*", "/", "-"];
+const allOperatorsExcludeMinus = ["+", "*", "/"];
 
 for (let calcKey of calcKeys) {
     calcKey.addEventListener("click", buttonClick);
@@ -10,24 +13,24 @@ for (let calcKey of calcKeys) {
 function buttonClick() {
     switch (this.getAttribute("name")) {
         case "num-char":
-            numCharFunc(this);
+            digitKeysClick(this);
             break;
         case "math-char":
-            mathCharFunc(this);
+            operatorKeysClick(this);
             break;
         case "dot-char":
-            dotCharFunc(this);
+            decimalPointKeyClick(this);
             break;
         case "op-char":
             switch (this.id) {
                 case "clear-key":
-                    clearAll();
+                    resultField.textContent = clearKeysClick(this);
                     break;
                 case "clear-one-key":
-                    clearOneChar();
+                    resultField.textContent = clearKeysClick(this);
                     break;
                 case "equal-key":
-                    printResult();
+                    resultField.textContent = printResult();
                     break;                    
             }     
             break;
@@ -36,83 +39,82 @@ function buttonClick() {
 
 
 
-/////////////////////////
+//////////////////////////
 // MULTI-KEY FUNCTIONS //
-///////////////////////
+////////////////////////
 
-function numCharFunc(charPar) {
-    let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
-    let charBeforeLast = resWin.innerHTML.charAt(resWin.innerHTML.length - 2);
+function digitKeysClick(keyElement) {
+    let resultFieldText = resultField.textContent;
 
-    if (charPar.id === "zero-key") {
-        if (lastChar === "0" && resWin.innerHTML.length === 1) {
+    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
+    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);    
+    let thisKeyElementText = keyElement.firstElementChild.textContent;
+
+    if (keyElement.id === "zero-key") {
+        if (lastChar === "0" && resultFieldText.length === 1) {
             return;
         }
-        else if (lastChar === "0" && resWin.innerHTML.length === 2 && resWin.innerHTML.charAt(0) === "-") {
+        else if (lastChar === "0" && resultFieldText.length === 2 && resultFieldText.charAt(0) === "-") {
             return;
         }
-        else if (lastChar === "0" && (charBeforeLast === "+" || charBeforeLast === "-" || charBeforeLast === "*" || charBeforeLast === "/")) {
+        else if (lastChar === "0" && allOperators.includes(charBeforeLast)) {
             return;
         }
         else {
-            resWin.innerHTML += charPar.firstElementChild.innerHTML;
+            resultField.textContent += thisKeyElementText;
         }
     }
     else {
-        if (lastChar === "0" && resWin.innerHTML.length === 1) {
-            resWin.innerHTML = charPar.firstElementChild.innerHTML;
+        if (lastChar === "0" && resultFieldText.length === 1) {
+            resultField.textContent = thisKeyElementText;
         }
-        else if (lastChar === "0" && (charBeforeLast === "+" || charBeforeLast === "-" || charBeforeLast === "*" || charBeforeLast === "/")) {
-            resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1) + charPar.firstElementChild.innerHTML;
+        else if (lastChar === "0" && allOperators.includes(charBeforeLast)) {
+            resultField.textContent = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
         }
         else {
-            resWin.innerHTML += charPar.firstElementChild.innerHTML;
+            resultField.textContent += thisKeyElementText;
         }
     }
 }
 
-function mathCharFunc(charPar) {
-    let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
-    let condLastChar = (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/");
+function operatorKeysClick(keyElement) {
+    let resultFieldText = resultField.textContent;
+    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
+    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);
+    let thisKeyElementText = keyElement.firstElementChild.textContent;
 
-    let charBeforeLast = resWin.innerHTML.charAt(resWin.innerHTML.length - 2);
-    let condCharBeforeLast = (charBeforeLast === "+" || charBeforeLast === "-" || charBeforeLast === "*" || charBeforeLast === "/");
-
-    let thisButtonText = charPar.firstElementChild.innerHTML;
-    let condButtonText = (thisButtonText === "+" || thisButtonText === "*" || thisButtonText === "/");
-
-    if (condLastChar || (lastChar === "." && condCharBeforeLast) || (resWin.innerHTML === "" && condButtonText)) {
+    if (allOperators.includes(lastChar) || (lastChar === "." && allOperators.includes(charBeforeLast)) || (resultFieldText === "" && allOperatorsExcludeMinus.includes(thisKeyElementText))) {
         return;
     }
-    else if (lastChar === "." && !condCharBeforeLast) {
-        resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1) + charPar.firstElementChild.innerHTML;
+    else if (lastChar === "." && !allOperators.includes(charBeforeLast)) {
+        resultField.textContent = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
     }
     else {
-        resWin.innerHTML += charPar.firstElementChild.innerHTML;
-    };
-}
-
-function dotCharFunc(charPar) {
-    let lastChar = resWin.innerHTML.charAt(resWin.innerHTML.length - 1);
-
-    if (lastChar === "." || (dotFinder())) {
-        return;
-    }
-    else {
-        resWin.innerHTML += charPar.firstElementChild.innerHTML;
+        resultField.textContent += thisKeyElementText;
     }
 }
 
-function dotFinder() {
+function decimalPointKeyClick(keyElement) {
+    let lastChar = resultField.textContent.charAt(resultField.textContent.length - 1);
+    let thisKeyElementText = keyElement.firstElementChild.textContent;    
+
+    if (lastChar === "." || decimalPointFinder()) {
+        return;
+    }
+    else {
+        resultField.textContent += thisKeyElementText;
+    }
+}
+
+function decimalPointFinder() {
     let indexOfDot;
     let indexOfMathChar;
 
-    for (let i = 0; i < resWin.innerHTML.length; i++) {        
-        if (resWin.innerHTML[i] === "+" || resWin.innerHTML[i] === "-" || resWin.innerHTML[i] === "*" || resWin.innerHTML[i] === "/") {
+    for (let i = 0; i < resultField.textContent.length; i++) {        
+        if (allOperators.includes(resultField.textContent[i])) {
             indexOfMathChar = i;
         }
-
-        if (resWin.innerHTML[i] === ".") {
+        if (resultField.textContent[i] === ".") {
             indexOfDot = i;
         }
     }
@@ -128,35 +130,46 @@ function dotFinder() {
     }
 }
 
+function clearKeysClick(keyElement) {
+    let resultFieldText = resultField.textContent;
+
+    if (keyElement.id === "clear-key") {
+        resultFieldText = "";
+    }
+    else {
+        resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1);
+    }
+
+    return resultFieldText;
+}
+
 
 
 ///////////////////////////
 // SINGLE-KEY FUNCTIONS //
 /////////////////////////
 
-// The logic for printing the result, activated by the EqualSing key
 function printResult() {
-    let resultWindowContent = resWin.innerHTML;
-    let lastChar = resultWindowContent.charAt(resWin.innerHTML.length - 1);
-    let condLastChar = (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/");    
+    let resultFieldText = resultField.textContent;
+    let lastChar = resultFieldText.charAt(resultFieldText.length - 1);
+    let charBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);  
 
-    if (resultWindowContent !== "" && !condLastChar) {
-        resWin.innerHTML = eval(resultWindowContent);
+    if (resultFieldText !== "") {
+        if (!allOperators.includes(lastChar) && lastChar !== ".") {
+            resultFieldText = eval(resultFieldText);
+        }
+        else if (allOperators.includes(lastChar) || (lastChar === "." && allDigits.includes(charBeforeLast))) {
+            resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 1));
+        }
+        else if (resultFieldText.length > 2 && lastChar === "." && allOperators.includes(charBeforeLast)) {
+            resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 2));
+        }
+        else {
+            resultFieldText = "";
+        }
     }
-    else if (resultWindowContent !== "" && condLastChar) {
-        resWin.innerHTML = eval(resWin.innerHTML.slice(0, resWin.innerHTML.length - 1));
-    }
-    else {
-        return;
-    }
-}
 
-function clearAll() {
-    resWin.innerHTML = "";
-}
-
-function clearOneChar() {
-    resWin.innerHTML = resWin.innerHTML.slice(0, resWin.innerHTML.length - 1);
+    return resultFieldText;
 }
 
 
@@ -203,4 +216,4 @@ function clearOneChar() {
 //     return result;
 // }
 
-})();
+// })();
