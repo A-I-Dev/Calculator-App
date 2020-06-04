@@ -48,8 +48,7 @@ function digitKeysClick(keyElement) {
     if (keyElement.id === "zero-key") {
         if (
             (resultFieldText === "0") 
-            ||  
-            (lastCharacter === "0" && allOperators.includes(characterBeforeLast))
+            || (lastCharacter === "0" && allOperators.includes(characterBeforeLast))
         ) {
             resultFieldText = resultFieldText;
         }
@@ -61,7 +60,10 @@ function digitKeysClick(keyElement) {
         if (resultFieldText === "0") {
             resultFieldText = thisKeyElementText;
         }
-        else if (lastCharacter === "0" && allOperators.includes(characterBeforeLast)) {
+        else if (
+            lastCharacter === "0" 
+            && allOperators.includes(characterBeforeLast)
+        ) {
             resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
         }
         else {
@@ -80,17 +82,14 @@ function operatorKeysClick(keyElement) {
 
     if (
         allOperators.includes(lastCharacter) 
-        || 
-        (lastCharacter === "." && allOperators.includes(characterBeforeLast)) 
-        ||
-        (resultFieldText === "" && thisKeyElementText !== "-")
+        || (lastCharacter === "." && allOperators.includes(characterBeforeLast)) 
+        || (resultFieldText === "" && thisKeyElementText !== "-")
     ) {
         resultFieldText = resultFieldText;
     }
     else if (
         lastCharacter === "." 
-        && 
-        !allOperators.includes(characterBeforeLast)
+        && !allOperators.includes(characterBeforeLast)
     ) {
         resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
     }
@@ -159,24 +158,19 @@ function printResult() {
 
     if (
         !allOperators.includes(lastCharacter) 
-        && 
-        lastCharacter !== "."
+        && lastCharacter !== "."
     ) {
         resultFieldText = eval(resultFieldText);
     }
     else if (
         allOperators.includes(lastCharacter) 
-        || 
-        (lastCharacter === "." && allDigits.includes(characterBeforeLast))
+        || (lastCharacter === "." && allDigits.includes(characterBeforeLast))
     ) {
         resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 1));
     }
     else if (
-        resultFieldText.length > 2 
-        && 
         lastCharacter === "." 
-        && 
-        allOperators.includes(characterBeforeLast)
+        && allOperators.includes(characterBeforeLast)
     ) {
         resultFieldText = eval(resultFieldText.slice(0, resultFieldText.length - 2));
     }
