@@ -88,7 +88,11 @@ function operatorKeysClick(keyElement) {
     ) {
         resultFieldText = resultFieldText;
     }
-    else if (lastCharacter === "." && !allOperators.includes(characterBeforeLast)) {
+    else if (
+        lastCharacter === "." 
+        && 
+        !allOperators.includes(characterBeforeLast)
+    ) {
         resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
     }
     else {
@@ -154,7 +158,11 @@ function printResult() {
     let lastCharacter = resultFieldText.charAt(resultFieldText.length - 1);
     let characterBeforeLast = resultFieldText.charAt(resultFieldText.length - 2);  
 
-    if (!allOperators.includes(lastCharacter) && lastCharacter !== ".") {
+    if (
+        !allOperators.includes(lastCharacter) 
+        && 
+        lastCharacter !== "."
+    ) {
         resultFieldText = eval(resultFieldText);
     }
     else if (
