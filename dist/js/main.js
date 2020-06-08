@@ -95,24 +95,11 @@ function operatorKeysClick(keyElement) {
                 thereIsAnOperator = true;
                 break;
             }
-            else {
-                continue;
-            }
         } 
     }
 
-    if (thereIsAnOperator) {
-        resultFieldText = resultFieldText;
-    }
-    else {
+    if (!thereIsAnOperator && resultFieldText !== "-") {
         if (
-            allOperators.includes(lastCharacter) 
-            || (lastCharacter === "." && allOperators.includes(characterBeforeLast)) 
-            || (resultFieldText === "" && thisKeyElementText !== "-")
-        ) {
-            resultFieldText = resultFieldText;
-        }
-        else if (
             lastCharacter === "." 
             && !allOperators.includes(characterBeforeLast)
         ) {
@@ -184,29 +171,23 @@ function printResult() {
     let 
         resultFieldText = resultField.textContent,
         lastCharacter = resultFieldText.charAt(resultFieldText.length - 1),
-        characterBeforeLast = resultFieldText.charAt(resultFieldText.length - 2)
+        indexOfLastOperator = 0,
+        indexOfLastNumber = 0
     ;
 
-    if (
-        !allOperators.includes(lastCharacter) 
-        && lastCharacter !== "."
-    ) {
-        resultFieldText = calculate(resultFieldText);
+    for (let i = 0; i < resultFieldText.length; i++) {
+        if (allOperators.includes(resultFieldText[i])) {
+            indexOfLastOperator = i;
+        }
+        if (allDigits.includes(resultFieldText[i])) {
+            indexOfLastNumber = i;
+        }
     }
-    else if (
-        allOperators.includes(lastCharacter) 
-        || (lastCharacter === "." && allDigits.includes(characterBeforeLast))
-    ) {
-        resultFieldText = calculate(resultFieldText.slice(0, resultFieldText.length - 1));
-    }
-    else if (
-        lastCharacter === "." 
-        && allOperators.includes(characterBeforeLast)
-    ) {
-        resultFieldText = calculate(resultFieldText.slice(0, resultFieldText.length - 2));
-    }
-    else {
-        resultFieldText = resultFieldText;
+
+    if (indexOfLastNumber > indexOfLastOperator && indexOfLastOperator !== 0) {
+        if (lastCharacter !== "." || !allOperators.includes(lastCharacter)){
+            resultFieldText = calculate(resultFieldText);
+        }
     }
 
     return resultFieldText;
@@ -221,54 +202,35 @@ function printResult() {
 function calculate(resultFieldText) {
     let 
         nums = numbersCollector(resultFieldText),
-        inputOperators = operatorsCollector(resultFieldText),
+        inputOperators = operatorCollector(resultFieldText),
         result = resultFieldText,
-        power = 0,
-        thereIsOneOrMoreFloatingPointNumbers = false
+        power = 0
     ;
 
-    if (nums[0] !== undefined && nums[1] !== undefined) {
-        for (num of nums) {
-            if (num.indexOf(".") !== -1) {
-                if (power < (num.length - 1) - num.indexOf(".")) {
-                    power = (num.length - 1) - num.indexOf(".");
-                }
+    for (num of nums) {
+        if (num.indexOf(".") !== -1) {
+            if (power < (num.length - 1) - num.indexOf(".")) {
+                power = (num.length - 1) - num.indexOf(".");
             }
         }
+    }
 
-        if (nums[0].indexOf(".") !== -1 || nums[1].indexOf(".") !== -1) {
-            thereIsOneOrMoreFloatingPointNumbers = true;
-            nums[0] = Math.floor(parseFloat(nums[0]) * (Math.pow(10, power)));
-            nums[1] = Math.floor(parseFloat(nums[1]) * (Math.pow(10, power)));
-        }
-        else {
-            nums[0] = parseInt(nums[0]);
-            nums[1] = parseInt(nums[1]);
-        }
+    nums[0] = Math.floor(parseFloat(nums[0]) * (Math.pow(10, power)));
+    nums[1] = Math.floor(parseFloat(nums[1]) * (Math.pow(10, power)));
 
-        switch (inputOperators[0]) {
-            case "/":
-                result = nums[0] / nums[1];
-                break;
-            case "*":
-                result = nums[0] * nums[1];
-                if (thereIsOneOrMoreFloatingPointNumbers) {
-                    result /= Math.pow(10, power * 2);
-                }
-                break;
-            case "+":
-                result = nums[0] + nums[1];
-                if (thereIsOneOrMoreFloatingPointNumbers) {
-                    result /= Math.pow(10, power);
-                }
-                break;
-            case "-":
-                result = nums[0] - nums[1];
-                if (thereIsOneOrMoreFloatingPointNumbers) {
-                    result /= Math.pow(10, power);
-                }
-                break;
-        }
+    switch (inputOperators[0]) {
+        case "/":
+            result = nums[0] / nums[1];
+            break;
+        case "*":
+            result = (nums[0] * nums[1]) / Math.pow(10, power * 2);
+            break;
+        case "+":
+            result = (nums[0] + nums[1]) / Math.pow(10, power);
+            break;
+        case "-":
+            result = (nums[0] - nums[1]) / Math.pow(10, power);
+            break;
     }
 
     return result;
@@ -295,7 +257,7 @@ function numbersCollector(resultFieldText) {
     return nums;
 }
 
-function operatorsCollector(resultFieldText) {
+function operatorCollector(resultFieldText) {
     let collectorsCounter = 0;
     let inputOperators = [];
 
