@@ -1,3 +1,9 @@
 @media (min-width: 992px) {
   .calc-key:hover {
-    background-color: #444; } }
+    background-color: #444; }
+  .calc-key.equal-key:hover {
+    background: #0074cc; }
+  .calc-key#clear-key:hover {
+    background: #c80111; }
+  .calc-key#clear-one-key:hover {
+    background: #c71f2d; } }

@@ -18,9 +18,19 @@ body {
 
 #calc-outer-wrap {
   max-width: 100%;
-  padding: 20px;
+  padding: 30px;
   background: #242424;
   z-index: 2; }
+
+#result-wrap {
+  position: relative; }
+
+.calc-hint {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 12px;
+  color: #242424; }
 
 #result {
   background: #ccc;
@@ -30,9 +40,9 @@ body {
   justify-content: flex-end;
   align-items: flex-end;
   color: #242424;
-  font-size: 36px;
+  font-size: 42px;
   overflow: hidden;
-  padding: 10px 16px;
+  padding: 22px 13px 5px;
   word-break: break-word;
   text-align: right; }
 
@@ -67,7 +77,12 @@ body {
   .calc-key.zero-key {
     padding: calc(50% - 5px) 0 0; }
   .calc-key.equal-key {
-    padding: 0; }
+    padding: 0;
+    background: #0062af; }
+  .calc-key#clear-key {
+    background: #a5010e; }
+  .calc-key#clear-one-key {
+    background: #a51924; }
   .calc-key:active {
     transform: scale(0.97); }
 
