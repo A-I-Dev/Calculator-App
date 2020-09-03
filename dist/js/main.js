@@ -1,15 +1,18 @@
-(function(){
-
-const calcKeys = document.getElementsByClassName("calc-key"); 
-const resultField = document.getElementById("result"); 
-const allDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const allOperators = ["/", "*", "+", "-"];
+const 
+    calcKeys = document.getElementsByClassName("calc-key"), 
+    resultField = document.getElementById("result"), 
+    allOperatorsArray = ["/", "*", "+", "-"],
+    allDigitsRegEx = /[0-9]/,    
+    allOperatorsRegEx = /[/*+-]/,
+    aloneNumberRegEx = /^[-]?[0-9.?]+$/,
+    twoNumbersRegEx = /^[-]?[0-9.?]+[/*+-][0-9.?]+$/
+;
 
 for (calcKey of calcKeys) {
-    calcKey.addEventListener("click", calcKeysClick);
+    calcKey.addEventListener("click", calcKeysClickDistributer);
 }
 
-function calcKeysClick() {
+function calcKeysClickDistributer() {
     switch (this.getAttribute("name")) {
         case "digit-keys":
             resultField.textContent = digitKeysClick(this);
@@ -49,7 +52,7 @@ function digitKeysClick(keyElement) {
     if (keyElement.id === "zero-key") {
         if (
             (resultFieldText === "0") 
-            || (lastCharacter === "0" && allOperators.includes(characterBeforeLast))
+            || (lastCharacter === "0" && allOperatorsRegEx.test(characterBeforeLast))
         ) {
             resultFieldText = resultFieldText;
         }
@@ -63,7 +66,7 @@ function digitKeysClick(keyElement) {
         }
         else if (
             lastCharacter === "0" 
-            && allOperators.includes(characterBeforeLast)
+            && allOperatorsRegEx.test(characterBeforeLast)
         ) {
             resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
         }
@@ -91,21 +94,27 @@ function operatorKeysClick(keyElement) {
             continue;
         }
         else {
-            if (allOperators.includes(resultFieldText[i])) {
+            if (allOperatorsRegEx.test(resultFieldText[i])) {
                 thereIsAnOperator = true;
                 break;
             }
         } 
     }
 
-    if (!thereIsAnOperator && resultFieldText !== "-") {
+    if (!thereIsAnOperator) {
         if (
             lastCharacter === "." 
-            && !allOperators.includes(characterBeforeLast)
+            && !allOperatorsRegEx.test(characterBeforeLast)
         ) {
             resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1) + thisKeyElementText;
         }
         else {
+            resultFieldText += thisKeyElementText;
+        }
+    }
+    else {
+        resultFieldText = printResult();
+        if (!allOperatorsRegEx.test(lastCharacter)) {
             resultFieldText += thisKeyElementText;
         }
     }
@@ -132,7 +141,7 @@ function lastNumberHasDecimalPoint() {
     let indexOfMathChar;
 
     for (let i = 0; i < resultField.textContent.length; i++) {        
-        if (allOperators.includes(resultField.textContent[i])) {
+        if (allOperatorsRegEx.test(resultField.textContent[i])) {
             indexOfMathChar = i;
         }
         if (resultField.textContent[i] === ".") {
@@ -152,13 +161,47 @@ function lastNumberHasDecimalPoint() {
 }
 
 function clearKeysClick(keyElement) {
-    let resultFieldText = resultField.textContent;
+    let 
+        resultFieldText = resultField.textContent,
+        lastCharacter = resultFieldText.charAt(resultFieldText.length - 1)
+    ;
 
     if (keyElement.id === "clear-key") {
         resultFieldText = 0;
     }
     else {
-        resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1);
+        if (!allOperatorsRegEx.test(lastCharacter)) {
+            if (aloneNumberRegEx.test(resultFieldText)) {
+                resultFieldText = 0;
+            }
+            else {
+                let instanceOfResultFieldText, additionalPosition;
+                let positionOneIsMinus = resultFieldText.charAt(0) === '-';
+
+                if (positionOneIsMinus) {
+                    instanceOfResultFieldText = resultFieldText.slice(1, resultFieldText.length);   
+                    additionalPosition = 2;
+                }
+                else {
+                    instanceOfResultFieldText = resultFieldText;
+                    additionalPosition = 1;
+                }
+
+                resultFieldText = resultFieldText.slice(0, (()=>{ 
+                    let positionOfOperator;
+                    for(let i in allOperatorsArray) {
+                        if (instanceOfResultFieldText.indexOf(allOperatorsArray[i]) > 0) {
+                            positionOfOperator = instanceOfResultFieldText.indexOf(allOperatorsArray[i]) + additionalPosition;
+                        }
+                    }
+                    return positionOfOperator;
+                })());
+            }
+        }
+        else {
+            resultFieldText = resultFieldText.slice(0, resultFieldText.length - 1);
+        }
+
         if (resultFieldText === "") {
             resultFieldText = 0;
         }
@@ -176,16 +219,16 @@ function printResult() {
     ;
 
     for (let i = 0; i < resultFieldText.length; i++) {
-        if (allOperators.includes(resultFieldText[i])) {
+        if (allOperatorsRegEx.test(resultFieldText[i])) {
             indexOfLastOperator = i;
         }
-        if (allDigits.includes(resultFieldText[i])) {
+        if (allDigitsRegEx.test(resultFieldText[i])) {
             indexOfLastNumber = i;
         }
     }
 
     if (indexOfLastNumber > indexOfLastOperator && indexOfLastOperator !== 0) {
-        if (lastCharacter !== "." || !allOperators.includes(lastCharacter)){
+        if (lastCharacter !== "." || !allOperatorsRegEx.test(lastCharacter)){
             resultFieldText = calculate(resultFieldText);
         }
     }
@@ -245,7 +288,7 @@ function numbersCollector(resultFieldText) {
             nums[collectorsCounter] += resultFieldText[i];
         }
         else {
-            if (allOperators.includes(resultFieldText[i])) {
+            if (allOperatorsRegEx.test(resultFieldText[i])) {
                 collectorsCounter++;
             }
             else {
@@ -266,7 +309,7 @@ function operatorCollector(resultFieldText) {
             continue;
         }
         else {
-            if (allOperators.includes(resultFieldText[i])) {
+            if (allOperatorsRegEx.test(resultFieldText[i])) {
                 inputOperators[collectorsCounter] = resultFieldText[i];
                 collectorsCounter++;
             }
@@ -275,5 +318,3 @@ function operatorCollector(resultFieldText) {
 
     return inputOperators;
 }
-
-})();

@@ -26,6 +26,7 @@ body {
   position: relative; }
 
 .calc-hint {
+  display: none;
   position: absolute;
   top: 5px;
   left: 5px;
